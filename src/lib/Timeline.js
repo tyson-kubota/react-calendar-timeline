@@ -439,7 +439,11 @@ export default class ReactCalendarTimeline extends Component {
         (this.state.visibleTimeStart - this.state.canvasTimeStart) /
         newZoom
     )
-    const componentScrollLeft = Math.round(this.scrollComponent.scrollLeft)
+    const componentScrollLeft = Math.round(
+      prevState.width *
+        (prevState.visibleTimeStart - prevState.canvasTimeStart) /
+        oldZoom
+    )
     if (componentScrollLeft !== scrollLeft) {
       this.scrollComponent.scrollLeft = scrollLeft
       this.scrollHeaderRef.scrollLeft = scrollLeft
@@ -1027,6 +1031,12 @@ export default class ReactCalendarTimeline extends Component {
       height: `${height}px`
     }
 
+    const scrollLeft = Math.round(
+      this.state.width *
+        (this.state.visibleTimeStart - this.state.canvasTimeStart) /
+        zoom
+    )
+
     return (
       <TimelineStateProvider
         visibleTimeStart={visibleTimeStart}
@@ -1063,7 +1073,9 @@ export default class ReactCalendarTimeline extends Component {
                   onScroll={this.onScroll}
                   isInteractingWithItem={isInteractingWithItem}
                 >
-                  <MarkerCanvas>
+                  <MarkerCanvas
+                    scrollLeft={scrollLeft}
+                  >
                     {this.columns(
                       canvasTimeStart,
                       canvasTimeEnd,
